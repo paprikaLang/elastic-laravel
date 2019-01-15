@@ -19,14 +19,12 @@
     </div>
     <div class="nav">
     	<ul class="searchList">
-            <li class="searchItem" data-type="article">article</li>
-            <li class="searchItem" data-type="job">job</li>
         </ul>
     </div>
 	<div id="bd" class="ue-clear">
         <div id="main">
         	<div class="sideBar">
-            	
+
                 <div class="subfield">网站</div>
                 <div class="sideBarShowHide">
                 	<a href="javascript:;" class="icon"></a>
@@ -40,7 +38,7 @@
                     @foreach($all_hits as $hit)
                     <div class="resultItem">
                             <div class="itemHead">
-                                <a href="{{ $hit['url'] }}"  target="_blank" class="title">{% autoescape off %}{{ $hit['title'] }}{% endautoescape %}</a>
+                                <a href="{{ $hit['url'] }}" style="text-decoration:none;"  target="_blank" class="title">{!!  $hit['title'] !!}</a>
                                 <span class="divsion">-</span>
                                 <span class="fileType">
                                     <span class="label">来源：</span>
@@ -52,7 +50,7 @@
                                 </span>
                             </div>
                             <div class="itemBody">
-                                {% autoescape off %}{{ $hit['content'] }}{% endautoescape %}
+                                {!! $hit['content'] !!}
                             </div>
                             <div class="itemFoot" style="margin-bottom: 30px;">
                                 <span class="info">
@@ -127,7 +125,7 @@
 	//分页
     var per_page = 10
 	$(".pagination").pagination({{ $total_nums }}, {
-		current_page :1, //当前页码
+		current_page :{{$page - 1}}, //当前页码
 		items_per_page :per_page,
 		display_msg :true,
 		callback :(page_id, jq) => {
@@ -168,68 +166,10 @@
     hideElement($('.dataList'), $('.searchInput'));
 </script>
 <script>
-    var searchArr;
-    //定义一个search的，判断浏览器有无数据存储（搜索历史）
-    if(localStorage.search){
-        //如果有，转换成 数组的形式存放到searchArr的数组里（localStorage以字符串的形式存储，所以要把它转换成数组的形式）
-        searchArr= localStorage.search.split(",")
-    }else{
-        //如果没有，则定义searchArr为一个空的数组
-        searchArr = [];
-    }
-    //把存储的数据显示出来作为搜索历史
-    MapSearchArr();
-
     function add_search(){
         var val = $(".searchInput").val();
-        if (val.length>=2){
-            //点击搜索按钮时，去重
-            FilterRepeat(val);
-            //去重后把数组存储到浏览器localStorage
-            localStorage.search = searchArr;
-            //然后再把搜索内容显示出来
-            MapSearchArr();
-        }
+        window.location.href='search?q='+val+"&s_type=article&p=1"
 
-        window.location.href='search?q='+val+"&s_type="+$(".searchItem.current").attr('data-type')
-
-    }
-
-    function MapSearchArr(){
-        var tmpHtml = "";
-        var arrLen = 0
-        if (searchArr.length > 6){
-            arrLen = 6
-        }else {
-            arrLen = searchArr.length
-        }
-        for (var i=0;i<arrLen;i++){
-            tmpHtml += '<li><a href="/search?q='+searchArr[i]+'">'+searchArr[i]+'</a></li>'
-        }
-        $(".mySearch .historyList").append(tmpHtml);
-    }
-    function removeByValue(arr, val) {
-      for(var i=0; i<arr.length; i++) {
-        if(arr[i] === val) {
-          arr.splice(i, 1);
-          break;
-        }
-      }
-    }
-    //去重
-    function FilterRepeat(val){
-        var kill = 0;
-        for (var i=0;i<searchArr.length;i++){
-            if(val===searchArr[i]){
-                kill ++;
-            }
-        }
-        if(kill<1){
-            searchArr.unshift(val);
-        }else {
-            removeByValue(searchArr, val)
-            searchArr.unshift(val)
-        }
     }
 </script>
 </html>
