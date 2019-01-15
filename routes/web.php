@@ -14,9 +14,14 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('home', 'HomeController@index');
+Route::get('suggest', 'HomeController@suggest');
+
 Route::prefix('elasticsearch')->group(function () {
     Route::get('test', ['uses'=>'ClientController@elasticsearchTest']);
 });
 Route::prefix('elastica')->group(function () {
     Route::get('test', ['uses'=>'ClientController@elasticaTest']);
+    Route::get('query', 'ClientController@elasticaQueries');
 });
