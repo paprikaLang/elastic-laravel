@@ -1,20 +1,19 @@
 
 <!DOCTYPE html >
 <html xmlns="http://www.w3.org/1999/xhtml">
-{% load staticfiles %}
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=emulateIE7" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>Prikango搜索引擎</title>
-<link href="{% static 'css/style.css' %}" rel="stylesheet" type="text/css" />
-<link href="{% static 'css/result.css' %}" rel="stylesheet" type="text/css" />
+<link href="/css/style.css" rel="stylesheet" type="text/css" />
+<link href="/css/result.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <div id="container">
 	<div id="hd" class="ue-clear">
     	<a href="/home"><div class="logo"></div></a>
         <div class="inputArea">
-        	<input type="text" class="searchInput" name="keyWords" value="{{ key_words }}"/>
+        	<input type="text" class="searchInput" name="keyWords" value="{{ $key_words }}"/>
             <input type="button" class="searchButton" onclick="add_search()"/>
         </div>
     </div>
@@ -29,97 +28,61 @@
         	<div class="sideBar">
             	
                 <div class="subfield">网站</div>
-                <ul class="subfieldContext">
-                	<li>
-                    	<span class="name">JOBBOLE</span>
-						<span class="unit">({{ jobbole_count }})</span>
-                    </li>
-                    <li>
-                    	<span class="name">LAGOU</span>
-						<span class="unit">({{ lagou_count }})</span>
-                    </li>
-                    <li class="more">
-                    	<a href="javascript:;">
-                        	<span class="text">更多</span>
-                        	<i class="moreIcon"></i>
-                        </a>
-                    </li>
-                </ul>
-                
-                            
                 <div class="sideBarShowHide">
                 	<a href="javascript:;" class="icon"></a>
                 </div>
             </div>
             <div class="resultArea">
             	<p class="resultTotal">
-                	<span class="info">找到约&nbsp;<span class="totalResult">{{ total_nums }}</span>&nbsp;条结果(用时<span class="time">{{ last_seconds }}</span>秒)，共约<span class="totalPage">{{ page_nums }}</span>页</span>
+                	<span class="info">找到约&nbsp;<span class="totalResult">{{ $total_nums }}</span>&nbsp;条结果，共约<span class="totalPage">{{ $page_nums }}</span>页</span>
                 </p>
                 <div class="resultList">
-                    {% for hit in all_hits %}
+                    @foreach($all_hits as $hit)
                     <div class="resultItem">
                             <div class="itemHead">
-                                <a href="{{ hit.url }}"  target="_blank" class="title">{% autoescape off %}{{ hit.title }}{% endautoescape %}</a>
+                                <a href="{{ $hit['url'] }}"  target="_blank" class="title">{% autoescape off %}{{ $hit['title'] }}{% endautoescape %}</a>
                                 <span class="divsion">-</span>
                                 <span class="fileType">
                                     <span class="label">来源：</span>
-                                    <span class="value">{{ s_type }}</span>
+                                    <span class="value">{{ $s_type }}</span>
                                 </span>
                                 <span class="dependValue">
                                     <span class="label">得分：</span>
-                                    <span class="value">{{ hit.score }}</span>
+                                    <span class="value">{{ $hit['score'] }}</span>
                                 </span>
                             </div>
                             <div class="itemBody">
-                                {% autoescape off %}{{ hit.content }}{% endautoescape %}
+                                {% autoescape off %}{{ $hit['content'] }}{% endautoescape %}
                             </div>
                             <div class="itemFoot" style="margin-bottom: 30px;">
                                 <span class="info">
                                     <label>网站：</label>
-                                    <span class="value">{{ s_type }}</span>
+                                    <span class="value">{{ $s_type }}</span>
                                 </span>
                                 <span class="info">
                                     <label>发布时间：</label>
-                                    <span class="value">{{ hit.create_date }}</span>
+                                    <span class="value">{{ $hit['create_date'] }}</span>
                                 </span>
                             </div>
                         </div>
-                    {% endfor %}
+                    @endforeach
                 </div>
                 <!-- 分页 -->
                 <div class="pagination ue-clear"></div>
                 <!-- 相关搜索 -->
-
-
-            </div>
-            <div class="historyArea">
-            	<div class="hotSearch">
-                	<h6>热门搜索</h6>
-                    <ul class="historyList">
-                        {% for search_word in top_search %}
-                            <li><a href="/search?q={{ search_word }}">{{ search_word }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                <div class="mySearch">
-                	<h6>我的搜索</h6>
-                    <ul class="historyList">
-
-                    </ul>
-                </div>
             </div>
         </div><!-- End of main -->
     </div><!--End of bd-->
 </div>
 </body>
-<script type="text/javascript" src="../js/jquery.js"></script>
-<script type="text/javascript" src="../js/global.js"></script>
-<script type="text/javascript" src="../js/pagination.js"></script>
+<script type="text/javascript" src="/js/jquery.js"></script>
+<script type="text/javascript" src="/js/global.js"></script>
+<script type="text/javascript" src="/js/pagination.js"></script>
 <script type="text/javascript">
-    var search_url = "{% url 'search' %}"
-    var s_type = "{{ s_type }}"
+
+    var s_type = "{{ $s_type }}"
 	$('.searchList').on('click', '.searchItem', function(){
-        if (s_type == 'article') {
+        if (s_type === 'article') {
             s_type = 'job'
         }else {
             s_type = 'article'
@@ -163,20 +126,16 @@
     var key_words = $("input[name='keyWords']").val()
 	//分页
     var per_page = 10
-    if (s_type == 'job'){
-        per_page = 15
-    }
-	$(".pagination").pagination({{ total_nums }}, {
-		current_page :{{ page|add:'-1' }}, //当前页码
+	$(".pagination").pagination({{ $total_nums }}, {
+		current_page :1, //当前页码
 		items_per_page :per_page,
 		display_msg :true,
 		callback :(page_id, jq) => {
             page_id += 1
-            window.location.href=search_url+'?q='+key_words+'&p='+page_id+'&s_type='+s_type
+            window.location.href='search?q='+key_words+'&p='+page_id+'&s_type='+s_type
         }
 	});
-	
-	{#setHeight();#}
+
 	$(window).resize(function(){
 		setHeight();	
 	});
@@ -209,7 +168,6 @@
     hideElement($('.dataList'), $('.searchInput'));
 </script>
 <script>
-    var search_url = "{% url 'search' %}"
     var searchArr;
     //定义一个search的，判断浏览器有无数据存储（搜索历史）
     if(localStorage.search){
@@ -233,7 +191,7 @@
             MapSearchArr();
         }
 
-        window.location.href=search_url+'?q='+val+"&s_type="+$(".searchItem.current").attr('data-type')
+        window.location.href='search?q='+val+"&s_type="+$(".searchItem.current").attr('data-type')
 
     }
 
@@ -252,7 +210,7 @@
     }
     function removeByValue(arr, val) {
       for(var i=0; i<arr.length; i++) {
-        if(arr[i] == val) {
+        if(arr[i] === val) {
           arr.splice(i, 1);
           break;
         }

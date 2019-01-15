@@ -54,7 +54,7 @@
                 async: true,
                 success: function(data) {
                     for (var i=0;i<data.length;i++){
-                        tmpHtml += '<li><a href="search?q='+data[i]+'">'+data[i]+'</a></li>'
+                        tmpHtml += '<li><a href="search?q='+data[i]+'&s_type=article">'+data[i]+'</a></li>'
                     }
                     $('.dataList').html("");
                     $('.dataList').append(tmpHtml);
@@ -94,9 +94,8 @@
             //然后再把搜索内容显示出来
             MapSearchArr();
         }
-        window.location.href=search_url+'?q='+val+"&s_type=article"
+        window.location.href='search?q='+val+"&s_type=article"
     }
-
     function MapSearchArr(){
         var tmpHtml = "";
         var arrLen = 0
@@ -106,7 +105,7 @@
             arrLen = searchArr.length
         }
         for (var i=0;i<arrLen;i++){
-            tmpHtml += '<a href="'+search_url+'?q='+searchArr[i]+'">'+searchArr[i]+'</a>'
+            tmpHtml += '<a href="search?q='+searchArr[i]+'">'+searchArr[i]+'</a>'
         }
         $(".mysearch .all-search").html(tmpHtml);
     }

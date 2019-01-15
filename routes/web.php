@@ -16,7 +16,7 @@ Route::get('/', function () {
 });
 
 Route::get('home', 'HomeController@index');
-Route::get('suggest', 'HomeController@suggest');
+Route::get('search', 'DetailController@search');
 
 Route::prefix('elasticsearch')->group(function () {
     Route::get('test', ['uses'=>'ClientController@elasticsearchTest']);
