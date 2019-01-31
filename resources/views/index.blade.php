@@ -18,6 +18,11 @@
             <div class="inputArea">
             	<input type="text" class="searchInput" />
                 <input type="button" class="searchButton" onclick="add_search()" />
+                @if(session()->has('message'))
+                    <div style="color:red;">
+                        {{ session()->get('message') }}
+                    </div>
+                @endif
                 <ul class="dataList">
                 </ul>
             </div>

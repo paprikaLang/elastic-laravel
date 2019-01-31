@@ -18,7 +18,7 @@ class DetailController extends Controller
         $page_id = $request->query('p');
         $page = (int)$page_id;
         $key_words = $request->query('q');
-        if ($s_type == 'article') {
+        if ($s_type == 'article' && $key_words) {
             $params = [
               "index" => 'jobbole',
               "type" => 'article',
@@ -43,7 +43,6 @@ class DetailController extends Controller
             ];
             $response = $this->elasticsearch->search($params);
             if ($response["hits"]){
-
                 if ($response["hits"]["total"]) {
                     $total_hits = $response["hits"]["total"];
                     if (($page % 10) > 0){
@@ -51,6 +50,8 @@ class DetailController extends Controller
                     } else{
                         $page_nums = intval($total_hits / 10);
                     }
+                }else {
+                    $page_nums = 0;
                 }
 
                 $hit_list = [];
@@ -79,12 +80,18 @@ class DetailController extends Controller
                     $hit_dict["content"] =substr($hit["_source"]["body"],0,800);
                     array_push($hit_list, $hit_dict);
                 }
-                return view('result', ['all_hits' => $hit_list,
-                    'page_nums' => $page_nums,
-                    'page' => $page,
-                    'key_words' => $key_words,
-                    's_type' => "article", 'total_nums' => $total_hits]);
+                if($page_nums) {
+                    return view('result', ['all_hits' => $hit_list,
+                        'page_nums' => $page_nums,
+                        'page' => $page,
+                        'key_words' => $key_words,
+                        's_type' => "article", 'total_nums' => $total_hits]);
+                }else {
+                    return back()->with('message', '未能搜寻到该关键字, 请尽量尝试技术类关键字如: redis, linux...');
+                }
             }
+        } else {
+            return back()->with('message', '请搜索技术类关键字如: redis, linux...');
         }
     }
 }

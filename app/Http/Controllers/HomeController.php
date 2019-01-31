@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Elasticsearch\ClientBuilder;
-use function Sodium\add;
+//use function Sodium\add;
 
 class HomeController extends Controller
 {
@@ -19,7 +19,6 @@ class HomeController extends Controller
         return view('index');
     }
     public function suggest(Request $request) {
-
         $s = $request->query('s');
         $re_data = [];
         if ($s){
@@ -38,7 +37,13 @@ class HomeController extends Controller
             foreach ($response['hits']['hits'] as $hit){
                 array_push($re_data, $hit['_source']['title']);
             }
-            return \Response::json($re_data);
+            if ($response['hits']['hits']){
+                return \Response::json($re_data);
+            } else {
+                return back()->with('message', '未能搜寻到该关键字, 请尽量尝试技术类关键字如: redis, linux...');
+            }
+        }else {
+            return back()->with('message', '请搜索技术类关键字如: redis, linux...');
         }
     }
 }

@@ -15,6 +15,11 @@
         <div class="inputArea">
         	<input type="text" class="searchInput" name="keyWords" value="{{ $key_words }}"/>
             <input type="button" class="searchButton" onclick="add_search()"/>
+            @if(session()->has('message'))
+                <div style="color:red;">
+                    {{ session()->get('message') }}
+                </div>
+            @endif
         </div>
     </div>
     <div class="nav">
@@ -24,8 +29,18 @@
 	<div id="bd" class="ue-clear">
         <div id="main">
         	<div class="sideBar">
-
-                <div class="subfield">网站</div>
+                <div class="subfield">作者</div>
+                <ul class="subfieldContext">
+                    <li>
+                        <a href="https://github.com/paprikaLang" class="name">GitHub</a>
+                    </li>
+                    <li>
+                        <a href="https://twitter.com/paprikaLang" class="name">Twitter</a>
+                    </li>
+                    <li>
+                        <a href="https://paprikalang.github.io" class="name">Blog</a>
+                    </li>
+                </ul>
                 <div class="sideBarShowHide">
                 	<a href="javascript:;" class="icon"></a>
                 </div>
